@@ -1,0 +1,798 @@
+/* ===================================================
+   CAREER BANNER
+   =================================================== */
+.career-banner-section {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  padding-top: 80px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.career-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.career-banner-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.career-breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.career-breadcrumb *,
+.career-breadcrumb *::before,
+.career-breadcrumb *::after {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.career-breadcrumb a {
+  color: #fcfcfc;
+  text-decoration: none !important;
+}
+
+.career-breadcrumb a:hover        { text-decoration: underline !important; }
+.career-breadcrumb-separator      { color: #ffffff; }
+.career-breadcrumb-current        { color: #ffffff; font-weight: 600; }
+
+.career-banner-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #fcfcfc;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ===================================================
+   CAREER PATHS — 2 image cards
+   =================================================== */
+.career-paths-section {
+  width: 100%;
+  background: #ffffff;
+  padding: 50px 1rem;
+}
+
+.career-paths-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.career-path-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.career-path-img-wrapper {
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+}
+
+.career-path-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.career-path-card:hover .career-path-img-wrapper img {
+  transform: scale(1.04);
+}
+
+.career-path-label {
+  font-size: 25px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0;
+}
+
+/* ===================================================
+   WHY WE DO IT
+   =================================================== */
+.why-section {
+  width: 100%;
+  background: #3c1053;   /* deep purple matching reference */
+  padding: 60px 1rem;
+}
+
+.why-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.why-heading {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.6rem 0;
+}
+
+.why-tagline {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+}
+
+.why-para {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.75;
+  margin: 0;
+  max-width: 860px;
+}
+
+/* ===================================================
+   BENEFITS
+   =================================================== */
+.benefits-section {
+  width: 100%;
+  background: #eeeeee;
+  /* padding: 70px 1rem; */
+}
+
+.benefits-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch;
+  gap: 4rem;
+}
+
+.benefits-text {
+  flex: 1 1 40%;
+  display: flex;
+  padding-top: 10px;
+  flex-direction: column;
+  font-size: 20px;
+  line-height: 1.5em;
+  font-weight: 500;
+  /* justify-content: center; */
+}
+
+.benefits-heading {
+  font-size: 40px;
+  font-weight: 800;
+  color: rgb(53, 26, 85) !important;
+  margin: 0 0 1.2rem 0;
+}
+
+.benefits-para {
+  font-size: 18px;
+  color: #444;
+  line-height: 1.8;
+  margin: 0;
+  min-height: 160px;
+  transition: opacity 0.4s ease;
+}
+
+/* Right: image + dots */
+.benefits-right {
+  flex: 0 0 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.benefits-img-wrapper {
+  width: 100%;
+  height: 340px;
+  overflow: hidden;
+}
+
+.benefits-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.4s ease;
+}
+
+/* Dots — below image, right-aligned */
+.benefits-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-self: flex-end;
+}
+
+.benefits-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  border: none;
+  background: #bbb;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s;
+}
+
+.benefits-dot--active {
+  background: #3b2d8e;
+}
+
+/* ===================================================
+   CURRENT JOB OPENINGS
+   =================================================== */
+.job-openings-section {
+  width: 100%;
+  background: #fafafa;
+  padding: 60px 1rem;
+}
+
+.job-openings-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.job-openings-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.job-openings-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #3c1053;
+  margin: 0 0 0.6rem 0;
+}
+
+.job-openings-subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ── Filter Tabs ── */
+.job-filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.job-filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  border: 2px solid #e0d6ea;
+  border-radius: 50px;
+  background: #ffffff;
+  color: #555;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.job-filter-tab:hover {
+  border-color: #6d3b9e;
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(109, 59, 158, 0.12);
+}
+
+.job-filter-tab--active {
+  background: #ffffff;
+  border-color: #6d3b9e;
+  color: #000000;
+  box-shadow: 0 4px 15px rgba(109, 59, 158, 0.3);
+}
+
+.job-filter-tab--active:hover {
+  background: linear-gradient(135deg, #7d4bae, #452a65);
+  border-color: #7d4bae;
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(109, 59, 158, 0.35);
+}
+
+.job-filter-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 11px;
+  color: #555;
+  background: rgba(74, 74, 74, 0.08);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.job-filter-tab--active .job-filter-tab-count {
+  background: rgba(74, 74, 74, 0.08);
+  color: #000000;
+}
+
+/* ── Job List Grid ── */
+.job-openings-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.job-openings-list--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Job Card ── */
+.job-opening-card {
+  background: #ffffff;
+  border: 1px solid #ede8f2;
+  border-radius: 16px;
+  padding: 2rem 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  box-shadow: 0 2px 8px rgba(53, 26, 85, 0.04);
+}
+
+.job-opening-card:hover {
+  border-color: #d4c4e4;
+  box-shadow: 0 12px 40px rgba(53, 26, 85, 0.1);
+  transform: translateY(-4px);
+}
+
+.job-opening-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: linear-gradient(135deg, #6d3b9e, #351a55);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(53, 26, 85, 0.2);
+}
+
+.job-opening-category-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 0.25rem 0.8rem;
+  background: #f0ebf5;
+  color: #6d3b9e;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.job-opening-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  padding-right: 3rem;
+  transition: color 0.3s ease;
+}
+
+.job-opening-card:hover .job-opening-title {
+  color: #6d3b9e;
+}
+
+.job-opening-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0;
+}
+
+.job-opening-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f8f6fa;
+  padding: 0.25rem 0.7rem;
+  border-radius: 6px;
+}
+
+.job-opening-desc {
+  font-size: 0.88rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+}
+
+.job-opening-apply {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #6d3b9e;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.job-opening-apply::after {
+  content: "→";
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.job-opening-apply:hover {
+  color: #351a55;
+  text-decoration: none;
+}
+
+.job-opening-apply:hover::after {
+  transform: translateX(4px);
+}
+
+.job-openings-empty {
+  text-align: center;
+  color: #888;
+  font-size: 1rem;
+  padding: 3rem 1rem;
+  grid-column: 1 / -1;
+  background: #f8f6fa;
+  border-radius: 12px;
+}
+
+/* ===================================================
+   CTA CARDS — ONE container, 3 columns with dividers
+   (matches reference: single outlined box, no shadows)
+   =================================================== */
+.cta-cards-section {
+  width: 100%;
+  background: #f5f5f5;
+  padding: 60px 1rem;
+}
+
+.cta-cards-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #ffffff;
+  border: 1px solid rgb(220, 220, 220);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cta-card {
+  padding: 2.2rem 2rem 2rem 2rem;
+  background: rgb(220, 220, 220);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border-right: 1px solid rgb(220, 220, 220);
+}
+
+.cta-card:last-child {
+  border-right: none;
+}
+
+.cta-icon {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  /* margin-bottom: 0.4rem; */
+}
+
+.cta-icon svg {
+  display: block;
+  width: 200px;
+  height: auto;
+}
+
+.cta-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.cta-para {
+  font-size: 15px;
+  font-weight: 400;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+/* Multiple links stacked vertically */
+.cta-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.cta-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #6d3b9e;   /* purple matching reference */
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cta-link:hover { text-decoration: underline; }
+
+/* ===================================================
+   FOLLOW US
+   =================================================== */
+.follow-section {
+  width: 100%;
+  background: #111111;
+  padding: 50px 1rem;
+}
+
+.follow-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.follow-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+}
+
+.follow-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2rem;
+}
+
+.follow-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.follow-link:hover {
+  opacity: 1;
+  transform: translateY(-3px);
+}
+
+/* ===================================================
+   INCLUSION — full-width image + text overlay (matches career-banner look)
+   =================================================== */
+.inclusion-section {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inclusion-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.inclusion-content {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.inclusion-line {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #fcfcfc;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.inclusion-sub {
+  font-size: 1.5rem;
+  color: #fcfcfc;
+  margin: 1.2rem 0 0 0;
+  line-height: 1.5;
+  font-style: italic;
+  /* font-weight: 100; */
+  max-width: 800px;
+}
+
+/* ===================================================
+   LEGAL
+   =================================================== */
+.legal-section {
+  width: 100%;
+  background: #ffffff;
+  padding: 40px 1rem;
+  border-top: 1px solid #e8e8e8;
+}
+
+.legal-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.legal-container p {
+  font-size: 0.78rem;
+  color: #888;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.legal-container a {
+  color: #3b2d8e;
+  text-decoration: underline;
+}
+
+/* ===================================================
+   RESPONSIVE
+   =================================================== */
+@media (max-width: 1024px) {
+  .benefits-right {
+    flex: 0 0 360px;
+  }
+  .benefits-img-wrapper {
+    height: 290px;
+  }
+}
+
+@media (max-width: 900px) {
+  .career-banner-section { min-height: 380px; padding-top: 75px; }
+
+  .career-paths-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+  .career-path-img-wrapper { height: 200px; }
+
+  .benefits-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .benefits-right {
+    flex: none;
+    width: 100%;
+    align-items: flex-start;
+  }
+  .benefits-img-wrapper { height: 280px; }
+  .benefits-dots {
+    flex-direction: row;
+    align-self: flex-start;
+  }
+
+  .job-openings-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cta-cards-container {
+    grid-template-columns: 1fr 1fr;
+    border-radius: 4px;
+  }
+  .cta-card:nth-child(2) { border-right: none; }
+  .cta-card:nth-child(3) {
+    border-top: 1px solid #d9d9d9;
+    grid-column: 1 / -1;
+    border-right: none;
+  }
+
+  .inclusion-section { min-height: 420px; }
+  .inclusion-line { font-size: 2.2rem; }
+}
+
+@media (max-width: 768px) {
+  .career-banner-section { min-height: 360px; padding-top: 70px; }
+  .career-banner-title   { font-size: 2rem; }
+  .career-breadcrumb     { font-size: 0.9rem; }
+
+  .career-paths-section  { padding: 36px 1rem; }
+  .career-paths-container { grid-template-columns: 1fr; gap: 1.5rem; }
+  .career-path-img-wrapper { height: 220px; }
+
+  .why-section    { padding: 50px 1rem; }
+  .why-heading    { font-size: 1.8rem; }
+
+  .benefits-section { padding: 50px 1rem; }
+  .benefits-heading { font-size: 1.6rem; }
+  .benefits-img-wrapper { height: 240px; }
+
+  .job-openings-section { padding: 40px 1rem; }
+  .job-openings-title   { font-size: 1.8rem; }
+  .job-openings-list    { grid-template-columns: 1fr; }
+
+  .cta-cards-section    { padding: 40px 1rem; }
+  .cta-cards-container  {
+    grid-template-columns: 1fr;
+  }
+  .cta-card {
+    border-right: none;
+    border-bottom: 1px solid #d9d9d9;
+  }
+  .cta-card:last-child { border-bottom: none; }
+
+  .inclusion-section    { min-height: 380px; }
+  .inclusion-line       { font-size: 1.8rem; }
+  .inclusion-sub        { font-size: 1.2rem; }
+
+  .follow-icons { gap: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .career-banner-section { min-height: 340px; padding-top: 65px; }
+  .career-banner-title   { font-size: 1.7rem; }
+
+  .career-path-img-wrapper { height: 180px; }
+
+  .job-openings-title { font-size: 1.5rem; }
+
+  .why-heading    { font-size: 1.4rem; }
+  .benefits-heading { font-size: 1.4rem; }
+  .benefits-img-wrapper { height: 200px; }
+
+  .inclusion-section { min-height: 340px; }
+  .inclusion-line { font-size: 1.5rem; }
+  .inclusion-content { padding: 2rem 1.2rem; }
+
+  .follow-icons { gap: 1.2rem; }
+}
