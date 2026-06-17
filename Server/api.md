@@ -8,7 +8,7 @@ http://localhost:3000/api
 
 ---
 
-## What We Do APIs
+## What We Do APIs (Navbar List)
 
 ### 1. GET All Items (Grouped by Category)
 
@@ -19,19 +19,7 @@ http://localhost:3000/api
 {
   "success": true,
   "data": {
-    "solutions": [
-      {
-        "id": 1,
-        "name": "AIDC",
-        "slug": "aidc",
-        "category": "solutions",
-        "description": null,
-        "sort_order": 1,
-        "is_active": 1,
-        "created_at": "2026-06-01T10:00:00.000Z",
-        "updated_at": "2026-06-01T10:00:00.000Z"
-      }
-    ],
+    "solutions": [...],
     "products": [...],
     "industries": [...]
   }
@@ -48,26 +36,6 @@ http://localhost:3000/api
 
 **Example:** `GET /api/whatwedo/category/solutions`
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "name": "AIDC",
-      "slug": "aidc",
-      "category": "solutions",
-      "description": null,
-      "sort_order": 1,
-      "is_active": 1,
-      "created_at": "2026-06-01T10:00:00.000Z",
-      "updated_at": "2026-06-01T10:00:00.000Z"
-    }
-  ]
-}
-```
-
 ---
 
 ### 3. GET Single Item by Slug
@@ -76,34 +44,11 @@ http://localhost:3000/api
 
 **Example:** `GET /api/whatwedo/aidc`
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "name": "AIDC",
-    "slug": "aidc",
-    "category": "solutions",
-    "description": null,
-    "sort_order": 1,
-    "is_active": 1,
-    "created_at": "2026-06-01T10:00:00.000Z",
-    "updated_at": "2026-06-01T10:00:00.000Z"
-  }
-}
-```
-
 ---
 
 ### 4. POST Create New Item
 
 **Endpoint:** `POST /api/whatwedo`
-
-**Headers:**
-```
-Content-Type: application/json
-```
 
 **Payload:**
 ```json
@@ -111,58 +56,8 @@ Content-Type: application/json
   "name": "New Solution",
   "slug": "new-solution",
   "category": "solutions",
-  "description": "This is a new solution description",
+  "description": "...",
   "sort_order": 17
-}
-```
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| name | string | ✅ | Item ka display name |
-| slug | string | ✅ | URL friendly unique identifier |
-| category | string | ✅ | `solutions` / `products` / `industries` |
-| description | string | ❌ | Item ki description |
-| sort_order | number | ❌ | Display order (default: 0) |
-
-**Success Response (201):**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 32,
-    "name": "New Solution",
-    "slug": "new-solution",
-    "category": "solutions",
-    "description": "This is a new solution description",
-    "sort_order": 17
-  },
-  "message": "Item created successfully"
-}
-```
-
-**Error Responses:**
-
-- Missing required fields (400):
-```json
-{
-  "success": false,
-  "message": "name, slug, and category are required"
-}
-```
-
-- Invalid category (400):
-```json
-{
-  "success": false,
-  "message": "Invalid category. Use: solutions, products, or industries"
-}
-```
-
-- Duplicate slug (409):
-```json
-{
-  "success": false,
-  "message": "Slug already exists"
 }
 ```
 
@@ -172,104 +67,21 @@ Content-Type: application/json
 
 **Endpoint:** `PUT /api/whatwedo/:id`
 
-**Example:** `PUT /api/whatwedo/1`
-
-**Headers:**
-```
-Content-Type: application/json
-```
-
-**Payload:**
-```json
-{
-  "name": "AIDC Updated",
-  "slug": "aidc",
-  "category": "solutions",
-  "description": "Updated description for AIDC",
-  "sort_order": 1,
-  "is_active": 1
-}
-```
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| name | string | ✅ | Item ka display name |
-| slug | string | ✅ | URL friendly unique identifier |
-| category | string | ✅ | `solutions` / `products` / `industries` |
-| description | string | ❌ | Item ki description |
-| sort_order | number | ❌ | Display order (default: 0) |
-| is_active | number | ❌ | 1 = active, 0 = inactive (default: 1) |
-
-**Success Response (200):**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "name": "AIDC Updated",
-    "slug": "aidc",
-    "category": "solutions",
-    "description": "Updated description for AIDC",
-    "sort_order": 1,
-    "is_active": 1,
-    "created_at": "2026-06-01T10:00:00.000Z",
-    "updated_at": "2026-06-02T12:00:00.000Z"
-  },
-  "message": "Item updated successfully"
-}
-```
-
-**Error Responses:**
-
-- Item not found (404):
-```json
-{
-  "success": false,
-  "message": "Item not found"
-}
-```
-
-- Duplicate slug (409):
-```json
-{
-  "success": false,
-  "message": "Slug already exists for another item"
-}
-```
-
 ---
 
 ### 6. DELETE Item
 
 **Endpoint:** `DELETE /api/whatwedo/:id`
 
-**Example:** `DELETE /api/whatwedo/1`
-
-**Success Response (200):**
-```json
-{
-  "success": true,
-  "message": "Item deleted successfully"
-}
-```
-
-**Error Response (404):**
-```json
-{
-  "success": false,
-  "message": "Item not found"
-}
-```
-
 ---
 
 ## WhatWeDo Page API (Single Query - Billing Optimized)
 
-### 1. GET WhatWeDo Page (Complete Page Data)
+**Purpose:** Fetch complete WhatWeDo page (banner, expertise, think cards, do items) in **just 1 database query**.
+
+### 1. GET WhatWeDo Page
 
 **Endpoint:** `GET /api/whatwedo-page`
-
-**Description:** Fetches the entire WhatWeDo page in a single database query. Returns banner, expertise, What We Think cards (with images), and What We Do items (with images). This is the main page API — minimal database calls for low AWS billing.
 
 **Response (200):**
 ```json
@@ -280,43 +92,20 @@ Content-Type: application/json
     "banner_title": "Automotive",
     "banner_image": "/images/whatwedo/automotive-banner.jpg",
     "expertise_header": "Our Expertise",
-    "expertise_lead": "Leverage breakthrough technologies to meet customer needs...",
-    "expertise_body": "As digital transformation and connectivity alter many facets...",
+    "expertise_lead": "Leverage breakthrough technologies...",
+    "expertise_body": "As digital transformation and connectivity...",
     "think_header": "What We Think",
     "think_description": null,
     "think_cards": [
-      {
-        "id": 1,
-        "image": "/images/whatwedo/think-1.jpg",
-        "title": "Wipro Intelligence™: Automotive Business Trends"
-      },
-      {
-        "id": 2,
-        "image": "/images/whatwedo/think-2.jpg",
-        "title": "Charging Ahead: Ensuring Superior Customer Experience...",
-        "excerpt": "According to the International Energy Agency (IEA)..."
-      },
-      {
-        "id": 3,
-        "image": "/images/whatwedo/think-3.jpg",
-        "title": "Fast Forward",
-        "excerpt": "The automotive industry's future..."
-      },
-      {
-        "id": 4,
-        "image": "/images/whatwedo/think-4.jpg",
-        "title": "The Digital Control Tower..."
-      }
+      { "id": 1, "image": "/images/whatwedo/think-1.jpg", "title": "Wipro Intelligence™: Automotive Business Trends" },
+      { "id": 2, "image": "/images/whatwedo/think-2.jpg", "title": "Charging Ahead...", "excerpt": "According to the IEA..." },
+      { "id": 3, "image": "/images/whatwedo/think-3.jpg", "title": "Fast Forward", "excerpt": "The automotive industry's future..." },
+      { "id": 4, "image": "/images/whatwedo/think-4.jpg", "title": "The Digital Control Tower..." }
     ],
     "do_header": "What We Do",
     "do_description": null,
     "do_items": [
-      {
-        "id": 1,
-        "image": "/images/whatwedo/do-1.jpg",
-        "title": "Autosol-SAP",
-        "description": "Easy insights into future business operations"
-      }
+      { "id": 1, "image": "/images/whatwedo/do-1.jpg", "title": "Autosol-SAP", "description": "Easy insights..." }
     ],
     "is_active": 1,
     "created_at": "2026-06-17T05:00:50.000Z",
@@ -325,16 +114,51 @@ Content-Type: application/json
 }
 ```
 
-### 2. PUT Update WhatWeDo Page
+---
+
+### 2. POST Create New Page
+
+**Endpoint:** `POST /api/whatwedo-page`
+
+**Headers:** `Content-Type: application/json`
+
+**Payload (all fields optional — defaults applied automatically):**
+```json
+{
+  "banner_title": "Automotive",
+  "banner_image": "/images/whatwedo/automotive-banner.jpg",
+  "expertise_header": "Our Expertise",
+  "expertise_lead": "Lead text...",
+  "expertise_body": "Body text...",
+  "think_header": "What We Think",
+  "think_description": null,
+  "think_cards": [
+    { "id": 1, "image": "/images/think-1.jpg", "title": "Card 1", "excerpt": "Optional excerpt" }
+  ],
+  "do_header": "What We Do",
+  "do_description": null,
+  "do_items": [
+    { "id": 1, "image": "/images/do-1.jpg", "title": "Item 1", "description": "Desc" }
+  ]
+}
+```
+
+**Success Response (201):**
+```json
+{
+  "success": true,
+  "data": { "id": 2 },
+  "message": "Page created successfully"
+}
+```
+
+---
+
+### 3. PUT Update Page
 
 **Endpoint:** `PUT /api/whatwedo-page/:id`
 
 **Example:** `PUT /api/whatwedo-page/1`
-
-**Headers:**
-```
-Content-Type: application/json
-```
 
 **Payload (all fields optional):**
 ```json
@@ -382,10 +206,33 @@ Content-Type: application/json
 
 ---
 
+### 4. DELETE Page
+
+**Endpoint:** `DELETE /api/whatwedo-page/:id`
+
+**Example:** `DELETE /api/whatwedo-page/1`
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Page deleted successfully"
+}
+```
+
+**Error Response (404):**
+```json
+{
+  "success": false,
+  "message": "Page not found"
+}
+```
+
+---
+
 ## Database Table Structure
 
 ### whatwedo (Navbar List - Existing Table)
-
 ```sql
 CREATE TABLE whatwedo (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -399,3 +246,23 @@ CREATE TABLE whatwedo (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 ```
+
+### whatwedo_page (Page Content - New Single-Query Table)
+```sql
+CREATE TABLE whatwedo_page (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  banner_title VARCHAR(255) NOT NULL,
+  banner_image VARCHAR(500) DEFAULT NULL,
+  expertise_header VARCHAR(255) DEFAULT NULL,
+  expertise_lead TEXT DEFAULT NULL,
+  expertise_body TEXT DEFAULT NULL,
+  think_header VARCHAR(255) DEFAULT NULL,
+  think_description TEXT DEFAULT NULL,
+  think_cards JSON DEFAULT NULL,
+  do_header VARCHAR(255) DEFAULT NULL,
+  do_description TEXT DEFAULT NULL,
+  do_items JSON DEFAULT NULL,
+  is_active TINYINT(1) DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

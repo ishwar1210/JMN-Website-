@@ -63,6 +63,56 @@ const WhatWeDoPage = {
       ]
     );
     return result.affectedRows > 0;
+  },
+
+  /**
+   * Create a new WhatWeDo page row.
+   * All fields are optional; sensible defaults will be used.
+   */
+  async create(data) {
+    const {
+      banner_title, banner_image,
+      expertise_header, expertise_lead, expertise_body,
+      think_header, think_description, think_cards,
+      do_header, do_description, do_items
+    } = data;
+
+    const thinkCardsJson = think_cards ? JSON.stringify(think_cards) : null;
+    const doItemsJson = do_items ? JSON.stringify(do_items) : null;
+
+    const [result] = await pool.query(
+      `INSERT INTO whatwedo_page (
+        banner_title, banner_image,
+        expertise_header, expertise_lead, expertise_body,
+        think_header, think_description, think_cards,
+        do_header, do_description, do_items
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        banner_title || 'Automotive',
+        banner_image || '/images/whatwedo/automotive-banner.jpg',
+        expertise_header || 'Our Expertise',
+        expertise_lead || null,
+        expertise_body || null,
+        think_header || 'What We Think',
+        think_description || null,
+        thinkCardsJson,
+        do_header || 'What We Do',
+        do_description || null,
+        doItemsJson
+      ]
+    );
+    return { id: result.insertId };
+  },
+
+  /**
+   * Delete a WhatWeDo page row by id.
+   */
+  async delete(id) {
+    const [result] = await pool.query(
+      'DELETE FROM whatwedo_page WHERE id = ?',
+      [id]
+    );
+    return result.affectedRows > 0;
   }
 };
 
