@@ -4,17 +4,40 @@ const WhatWeDoPage = require('../models/whatwedoPage');
 
 /**
  * GET /api/whatwedo-page
- * Fetches the complete WhatWeDo page data in a single query.
- * Returns banner, expertise, think_cards, do_items (with images) all at once.
+ * Fetches ALL WhatWeDo page entries in a single query.
+ * Returns an array of all pages. Each page contains
+ * banner, expertise, think_cards, do_items.
  */
 router.get('/', async (req, res) => {
   try {
-    const page = await WhatWeDoPage.getPage();
+    const pages = await WhatWeDoPage.getAll();
+
+    res.json({
+      success: true,
+      data: pages
+    });
+  } catch (error) {
+    console.error('Error fetching WhatWeDo pages:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+/**
+ * GET /api/whatwedo-page/:id
+ * Fetches a single WhatWeDo page entry by id.
+ */
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const page = await WhatWeDoPage.getById(id);
 
     if (!page) {
       return res.status(404).json({
         success: false,
-        message: 'WhatWeDo page data not found'
+        message: 'WhatWeDo page not found'
       });
     }
 
@@ -62,7 +85,7 @@ router.put('/:id', async (req, res) => {
     const updated = await WhatWeDoPage.update(id, req.body);
 
     if (updated) {
-      const page = await WhatWeDoPage.getPage();
+      const page = await WhatWeDoPage.getById(id);
       res.json({
         success: true,
         data: page,

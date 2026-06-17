@@ -2,26 +2,44 @@ const pool = require('../config/db');
 
 const WhatWeDoPage = {
   /**
-   * Get the WhatWeDo page data (single row).
-   * Only 1 database query for the entire page.
+   * Get all WhatWeDo page entries (array).
+   * Only 1 database query for all pages.
    * JSON columns (think_cards, do_items) are auto-parsed by MySQL.
    */
-  async getPage() {
+  async getAll() {
     const [rows] = await pool.query(
-      'SELECT * FROM whatwedo_page WHERE is_active = 1 LIMIT 1'
+      'SELECT * FROM whatwedo_page WHERE is_active = 1 ORDER BY id'
+    );
+
+    // Parse JSON strings into objects for each row
+    return rows.map(page => {
+      if (typeof page.think_cards === 'string') {
+        page.think_cards = JSON.parse(page.think_cards);
+      }
+      if (typeof page.do_items === 'string') {
+        page.do_items = JSON.parse(page.do_items);
+      }
+      return page;
+    });
+  },
+
+  /**
+   * Get single WhatWeDo page by id.
+   */
+  async getById(id) {
+    const [rows] = await pool.query(
+      'SELECT * FROM whatwedo_page WHERE id = ? AND is_active = 1',
+      [id]
     );
     if (rows.length === 0) return null;
 
     const page = rows[0];
-
-    // Parse JSON strings into objects if they are strings
     if (typeof page.think_cards === 'string') {
       page.think_cards = JSON.parse(page.think_cards);
     }
     if (typeof page.do_items === 'string') {
       page.do_items = JSON.parse(page.do_items);
     }
-
     return page;
   },
 

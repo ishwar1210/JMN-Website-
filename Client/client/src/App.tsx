@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar/Navbar';
 import Home from './pages/Home/Home';
 import Career from './pages/Career/Career';
 import WhatWeDo from './pages/WhatWeDo/WhatWeDo';
+import Contact from './pages/Contact/Contact';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/career" element={<Career />} />
         <Route path="/what-we-do/*" element={<WhatWeDo />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       <footer className="site-footer">
         <p>Copyright © 2012-2026 JMN Infotech. All rights reserved.</p>

@@ -77,11 +77,49 @@ http://localhost:3000/api
 
 ## WhatWeDo Page API (Single Query - Billing Optimized)
 
-**Purpose:** Fetch complete WhatWeDo page (banner, expertise, think cards, do items) in **just 1 database query**.
+**Purpose:** Fetch complete WhatWeDo page(s) (banner, expertise, think cards, do items) in **just 1 database query**.
 
-### 1. GET WhatWeDo Page
+### 1. GET All Pages (Array)
 
 **Endpoint:** `GET /api/whatwedo-page`
+
+**Description:** Returns ALL WhatWeDo page entries as an array. Each page contains banner, expertise, think_cards with images, and do_items with images.
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "banner_title": "Automotive",
+      "banner_image": "/images/whatwedo/automotive-banner.jpg",
+      "expertise_header": "Our Expertise",
+      "expertise_lead": "Leverage breakthrough technologies...",
+      "expertise_body": "As digital transformation and connectivity...",
+      "think_header": "What We Think",
+      "think_description": null,
+      "think_cards": [
+        { "id": 1, "image": "/images/whatwedo/think-1.jpg", "title": "Wipro Intelligence™: Automotive Business Trends" },
+        { "id": 2, "image": "/images/whatwedo/think-2.jpg", "title": "Charging Ahead...", "excerpt": "According to the IEA..." },
+        { "id": 3, "image": "/images/whatwedo/think-3.jpg", "title": "Fast Forward", "excerpt": "The automotive industry's future..." },
+        { "id": 4, "image": "/images/whatwedo/think-4.jpg", "title": "The Digital Control Tower..." }
+      ],
+      "do_header": "What We Do",
+      "do_description": null,
+      "do_items": [
+        { "id": 1, "image": "/images/whatwedo/do-1.jpg", "title": "Autosol-SAP", "description": "Easy insights..." }
+      ]
+    }
+  ]
+}
+```
+
+### 2. GET Single Page by ID
+
+**Endpoint:** `GET /api/whatwedo-page/:id`
+
+**Example:** `GET /api/whatwedo-page/1`
 
 **Response (200):**
 ```json
@@ -91,32 +129,13 @@ http://localhost:3000/api
     "id": 1,
     "banner_title": "Automotive",
     "banner_image": "/images/whatwedo/automotive-banner.jpg",
-    "expertise_header": "Our Expertise",
-    "expertise_lead": "Leverage breakthrough technologies...",
-    "expertise_body": "As digital transformation and connectivity...",
-    "think_header": "What We Think",
-    "think_description": null,
-    "think_cards": [
-      { "id": 1, "image": "/images/whatwedo/think-1.jpg", "title": "Wipro Intelligence™: Automotive Business Trends" },
-      { "id": 2, "image": "/images/whatwedo/think-2.jpg", "title": "Charging Ahead...", "excerpt": "According to the IEA..." },
-      { "id": 3, "image": "/images/whatwedo/think-3.jpg", "title": "Fast Forward", "excerpt": "The automotive industry's future..." },
-      { "id": 4, "image": "/images/whatwedo/think-4.jpg", "title": "The Digital Control Tower..." }
-    ],
-    "do_header": "What We Do",
-    "do_description": null,
-    "do_items": [
-      { "id": 1, "image": "/images/whatwedo/do-1.jpg", "title": "Autosol-SAP", "description": "Easy insights..." }
-    ],
-    "is_active": 1,
-    "created_at": "2026-06-17T05:00:50.000Z",
-    "updated_at": "2026-06-17T05:00:50.000Z"
+    ...
   }
 }
 ```
 
----
 
-### 2. POST Create New Page
+### 3. POST Create New Page
 
 **Endpoint:** `POST /api/whatwedo-page`
 
@@ -152,9 +171,8 @@ http://localhost:3000/api
 }
 ```
 
----
 
-### 3. PUT Update Page
+### 4. PUT Update Page
 
 **Endpoint:** `PUT /api/whatwedo-page/:id`
 
@@ -204,9 +222,8 @@ http://localhost:3000/api
 }
 ```
 
----
 
-### 4. DELETE Page
+### 5. DELETE Page
 
 **Endpoint:** `DELETE /api/whatwedo-page/:id`
 
