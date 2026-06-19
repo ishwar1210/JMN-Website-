@@ -463,6 +463,7 @@ Base URL: `/api/career`
       {
         "id": 1,
         "job_title": "Software Engineer",
+        "job_category": "Engineering",
         "job_desc": "Responsible for developing applications.",
         "job_type": "Full-time",
         "created_at": "2026-06-19T09:20:00.000Z"
@@ -482,6 +483,7 @@ Base URL: `/api/career`
     "data": {
       "id": 1,
       "job_title": "Software Engineer",
+      "job_category": "Engineering",
       "job_desc": "Responsible for developing applications.",
       "job_type": "Full-time",
       "created_at": "2026-06-19T09:20:00.000Z"
@@ -504,6 +506,7 @@ Base URL: `/api/career`
   ```json
   {
     "job_title": "Software Engineer",
+    "job_category": "Engineering",
     "job_desc": "Responsible for developing applications.",
     "job_type": "Full-time"
   }
@@ -516,6 +519,7 @@ Base URL: `/api/career`
     "data": {
       "id": 1,
       "job_title": "Software Engineer",
+      "job_category": "Engineering",
       "job_desc": "Responsible for developing applications.",
       "job_type": "Full-time"
     }
@@ -537,6 +541,7 @@ Base URL: `/api/career`
   ```json
   {
     "job_title": "Senior Software Engineer",
+    "job_category": "Engineering",
     "job_desc": "Responsible for leading team development.",
     "job_type": "Full-time"
   }
@@ -549,6 +554,7 @@ Base URL: `/api/career`
     "data": {
       "id": "1",
       "job_title": "Senior Software Engineer",
+      "job_category": "Engineering",
       "job_desc": "Responsible for leading team development.",
       "job_type": "Full-time"
     }

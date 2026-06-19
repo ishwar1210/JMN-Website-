@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosInstance, { baseUrl } from "../../../api/axiosInstance";
 import { ENDPOINTS } from "../../../api/endpoint";
-import bannerImage from "../../../assets/images/automotive-1-1896x590.jpg";
 import "../../../styles/layout/whatwedo.css";
 
 interface ThinkItem {
@@ -25,6 +24,12 @@ interface WhatWeDoDetailData {
   think_items: ThinkItem[];
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
 interface Props {
   whatwedoId: number;
 }
@@ -34,24 +39,37 @@ const Whatwedo: React.FC<Props> = ({ whatwedoId }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     const fetchDetail = async () => {
       try {
-        const response = await axiosInstance.get(
-          ENDPOINTS.WHATWEDODETAIL_BY_WHATWEDO_ID(whatwedoId)
+        const response = await axiosInstance.get<ApiResponse<WhatWeDoDetailData>>(
+          ENDPOINTS.WHATWEDODETAIL_BY_WHATWEDO_ID(whatwedoId),
+          { signal: abortController.signal }
         );
         if (response.data.success) {
           setDetail(response.data.data);
         } else {
+          console.warn("API returned success: false", response.data.message);
           setDetail(null);
         }
       } catch (error) {
+        if (abortController.signal.aborted) {
+          return; // Component unmounted, ignore
+        }
         console.error("Error fetching What We Do detail:", error);
         setDetail(null);
       } finally {
-        setLoading(false);
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
     fetchDetail();
+
+    return () => {
+      abortController.abort();
+    };
   }, [whatwedoId]);
 
   if (loading) {
@@ -70,11 +88,10 @@ const Whatwedo: React.FC<Props> = ({ whatwedoId }) => {
     );
   }
 
-  const baseUrl = axiosInstance.defaults.baseURL?.replace('/api', '') || 'http://192.168.1.47:5000';
 
   const bannerImageUrl = detail.banner_image
     ? `${baseUrl}${detail.banner_image}`
-    : bannerImage;
+    : '';
 
   const sortedThinkItems = [...detail.think_items].sort(
     (a, b) => a.sort_order - b.sort_order
@@ -117,10 +134,10 @@ const Whatwedo: React.FC<Props> = ({ whatwedoId }) => {
 
             <div className="auto-think__grid">
               {/* ── LEFT COLUMN ── */}
-              <div className="auto-think__col">
+              <div className="auto-think__col" key="left-col">
                 {/* Card 1 — tall (sort_order 1) */}
                 {card1 && (
-                  <div className="auto-think__card auto-think__card--tall">
+                  <div key={`think-card-${card1.id}`} className="auto-think__card auto-think__card--tall">
                     <img
                       src={`${baseUrl}${card1.think_image}`}
                       alt={card1.think_header}
@@ -135,7 +152,7 @@ const Whatwedo: React.FC<Props> = ({ whatwedoId }) => {
                 )}
                 {/* Card 3 — short (sort_order 3) */}
                 {card3 && (
-                  <div className="auto-think__card auto-think__card--short">
+                  <div key={`think-card-${card3.id}`} className="auto-think__card auto-think__card--short">
                     <img
                       src={`${baseUrl}${card3.think_image}`}
                       alt={card3.think_header}
@@ -151,10 +168,10 @@ const Whatwedo: React.FC<Props> = ({ whatwedoId }) => {
               </div>
 
               {/* ── RIGHT COLUMN ── */}
-              <div className="auto-think__col">
+              <div className="auto-think__col" key="right-col">
                 {/* Card 2 — short (sort_order 2) */}
                 {card2 && (
-                  <div className="auto-think__card auto-think__card--short">
+                  <div key={`think-card-${card2.id}`} className="auto-think__card auto-think__card--short">
                     <img
                       src={`${baseUrl}${card2.think_image}`}
                       alt={card2.think_header}
@@ -169,7 +186,7 @@ const Whatwedo: React.FC<Props> = ({ whatwedoId }) => {
                 )}
                 {/* Card 4 — tall (sort_order 4) */}
                 {card4 && (
-                  <div className="auto-think__card auto-think__card--tall">
+                  <div key={`think-card-${card4.id}`} className="auto-think__card auto-think__card--tall">
                     <img
                       src={`${baseUrl}${card4.think_image}`}
                       alt={card4.think_header}

@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
 
 // 3. POST - CREATE NEW ITEM
 router.post('/', async (req, res) => {
-  const { job_title, job_desc, job_type } = req.body;
+  const { job_title, job_category, job_desc, job_type } = req.body;
 
   if (!job_title) {
     return res.status(400).json({ success: false, message: 'Please provide required fields: job_title' });
@@ -38,14 +38,14 @@ router.post('/', async (req, res) => {
 
   try {
     const [result] = await db.query(
-      'INSERT INTO career (job_title, job_desc, job_type) VALUES (?, ?, ?)',
-      [job_title, job_desc || null, job_type || null]
+      'INSERT INTO career (job_title, job_category, job_desc, job_type) VALUES (?, ?, ?, ?)',
+      [job_title, job_category || null, job_desc || null, job_type || null]
     );
 
     res.status(201).json({
       success: true,
       message: 'Career item created successfully',
-      data: { id: result.insertId, job_title, job_desc, job_type }
+      data: { id: result.insertId, job_title, job_category, job_desc, job_type }
     });
   } catch (error) {
     console.error('Error inserting career item:', error);
@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
 // 4. PUT - UPDATE ITEM BY ID
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { job_title, job_desc, job_type } = req.body;
+  const { job_title, job_category, job_desc, job_type } = req.body;
 
   if (!job_title) {
     return res.status(400).json({ success: false, message: 'Please provide required fields: job_title' });
@@ -70,14 +70,14 @@ router.put('/:id', async (req, res) => {
     }
 
     await db.query(
-      'UPDATE career SET job_title = ?, job_desc = ?, job_type = ? WHERE id = ?',
-      [job_title, job_desc || null, job_type || null, id]
+      'UPDATE career SET job_title = ?, job_category = ?, job_desc = ?, job_type = ? WHERE id = ?',
+      [job_title, job_category || null, job_desc || null, job_type || null, id]
     );
 
     res.json({
       success: true,
       message: 'Career item updated successfully',
-      data: { id, job_title, job_desc, job_type }
+      data: { id, job_title, job_category, job_desc, job_type }
     });
   } catch (error) {
     console.error('Error updating career item:', error);
