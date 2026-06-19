@@ -1,151 +1,118 @@
 const express = require('express');
 const router = express.Router();
-const WhatWeDo = require('../models/whatwedo');
+const db = require('../config/db');
 
-// GET /api/whatwedo - Get all items (grouped by category)
+// 1. GET ALL ITEMS
 router.get('/', async (req, res) => {
   try {
-    const items = await WhatWeDo.getAll();
-
-    // Group by category
-    const grouped = {
-      solutions: items.filter(item => item.category === 'solutions'),
-      products: items.filter(item => item.category === 'products'),
-      industries: items.filter(item => item.category === 'industries')
-    };
-
-    res.json({ success: true, data: grouped });
+    const [rows] = await db.query('SELECT * FROM whatwedo ORDER BY created_at DESC');
+    res.json({ success: true, data: rows });
   } catch (error) {
-    console.error('Error fetching whatwedo:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Error fetching data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
 
-// GET /api/whatwedo/category/:category - Get items by category
-router.get('/category/:category', async (req, res) => {
+// 2. GET SINGLE ITEM BY ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const { category } = req.params;
-    const validCategories = ['solutions', 'products', 'industries'];
-
-    if (!validCategories.includes(category)) {
-      return res.status(400).json({ success: false, message: 'Invalid category' });
-    }
-
-    const items = await WhatWeDo.getByCategory(category);
-    res.json({ success: true, data: items });
-  } catch (error) {
-    console.error('Error fetching category:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
-  }
-});
-
-// GET /api/whatwedo/:slug - Get single item by slug
-router.get('/:slug', async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const item = await WhatWeDo.getBySlug(slug);
-
-    if (!item) {
+    const [rows] = await db.query('SELECT * FROM whatwedo WHERE id = ?', [id]);
+    if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Item not found' });
     }
-
-    res.json({ success: true, data: item });
+    res.json({ success: true, data: rows[0] });
   } catch (error) {
-    console.error('Error fetching item:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Error fetching single item:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
 
-// POST /api/whatwedo - Create new item
+// 3. POST - CREATE NEW ITEM
 router.post('/', async (req, res) => {
+  const { name, slug, category } = req.body;
+
+  if (!name || !slug || !category) {
+    return res.status(400).json({ success: false, message: 'Please provide all required fields: name, slug, category' });
+  }
+
   try {
-    const { name, slug, category, description, sort_order } = req.body;
-
-    // Validation
-    if (!name || !slug || !category) {
-      return res.status(400).json({ success: false, message: 'name, slug, and category are required' });
+    // Check if slug already exists since it's UNIQUE
+    const [existing] = await db.query('SELECT id FROM whatwedo WHERE slug = ?', [slug]);
+    if (existing.length > 0) {
+      return res.status(400).json({ success: false, message: 'Slug must be unique. This slug is already taken.' });
     }
 
-    const validCategories = ['solutions', 'products', 'industries'];
-    if (!validCategories.includes(category)) {
-      return res.status(400).json({ success: false, message: 'Invalid category. Use: solutions, products, or industries' });
-    }
+    const [result] = await db.query(
+      'INSERT INTO whatwedo (name, slug, category) VALUES (?, ?, ?)',
+      [name, slug, category]
+    );
 
-    // Check if slug already exists
-    const existing = await WhatWeDo.getBySlug(slug);
-    if (existing) {
-      return res.status(409).json({ success: false, message: 'Slug already exists' });
-    }
-
-    const newItem = await WhatWeDo.create({ name, slug, category, description, sort_order });
-    res.status(201).json({ success: true, data: newItem, message: 'Item created successfully' });
+    res.status(201).json({
+      success: true,
+      message: 'Item created successfully',
+      data: { id: result.insertId, name, slug, category }
+    });
   } catch (error) {
-    console.error('Error creating item:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Error inserting data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
 
-// PUT /api/whatwedo/:id - Update item by id
+// 4. PUT - UPDATE ITEM BY ID
 router.put('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, slug, category, description, sort_order, is_active } = req.body;
+  const { id } = req.params;
+  const { name, slug, category } = req.body;
 
+  if (!name || !slug || !category) {
+    return res.status(400).json({ success: false, message: 'Please provide all required fields: name, slug, category' });
+  }
+
+  try {
     // Check if item exists
-    const existingItem = await WhatWeDo.getById(id);
-    if (!existingItem) {
+    const [existingItem] = await db.query('SELECT id FROM whatwedo WHERE id = ?', [id]);
+    if (existingItem.length === 0) {
       return res.status(404).json({ success: false, message: 'Item not found' });
     }
 
-    // Validation
-    if (!name || !slug || !category) {
-      return res.status(400).json({ success: false, message: 'name, slug, and category are required' });
+    // Check if new slug is taken by another item
+    const [existingSlug] = await db.query('SELECT id FROM whatwedo WHERE slug = ? AND id != ?', [slug, id]);
+    if (existingSlug.length > 0) {
+      return res.status(400).json({ success: false, message: 'Slug must be unique. This slug is already taken.' });
     }
 
-    const validCategories = ['solutions', 'products', 'industries'];
-    if (!validCategories.includes(category)) {
-      return res.status(400).json({ success: false, message: 'Invalid category. Use: solutions, products, or industries' });
-    }
+    await db.query(
+      'UPDATE whatwedo SET name = ?, slug = ?, category = ? WHERE id = ?',
+      [name, slug, category, id]
+    );
 
-    // Check slug uniqueness (exclude current item)
-    const slugExists = await WhatWeDo.getBySlug(slug);
-    if (slugExists && slugExists.id !== parseInt(id)) {
-      return res.status(409).json({ success: false, message: 'Slug already exists for another item' });
-    }
-
-    const updated = await WhatWeDo.update(id, { name, slug, category, description, sort_order, is_active });
-    if (updated) {
-      const updatedItem = await WhatWeDo.getById(id);
-      res.json({ success: true, data: updatedItem, message: 'Item updated successfully' });
-    } else {
-      res.status(500).json({ success: false, message: 'Failed to update item' });
-    }
+    res.json({
+      success: true,
+      message: 'Item updated successfully',
+      data: { id, name, slug, category }
+    });
   } catch (error) {
-    console.error('Error updating item:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Error updating data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
 
-// DELETE /api/whatwedo/:id - Delete item by id
+// 5. DELETE - DELETE ITEM BY ID
 router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-
     // Check if item exists
-    const existingItem = await WhatWeDo.getById(id);
-    if (!existingItem) {
+    const [existingItem] = await db.query('SELECT id FROM whatwedo WHERE id = ?', [id]);
+    if (existingItem.length === 0) {
       return res.status(404).json({ success: false, message: 'Item not found' });
     }
 
-    const deleted = await WhatWeDo.delete(id);
-    if (deleted) {
-      res.json({ success: true, message: 'Item deleted successfully' });
-    } else {
-      res.status(500).json({ success: false, message: 'Failed to delete item' });
-    }
+    await db.query('DELETE FROM whatwedo WHERE id = ?', [id]);
+
+    res.json({ success: true, message: 'Item deleted successfully' });
   } catch (error) {
-    console.error('Error deleting item:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Error deleting data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
 
