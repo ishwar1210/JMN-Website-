@@ -70,6 +70,30 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// 2.5 GET DETAIL BY WHATWEDO ID
+router.get('/whatwedo/:whatwedo_id', async (req, res) => {
+  const { whatwedo_id } = req.params;
+  try {
+    const [result] = await db.query('CALL SP_GetWhatwedoDetailByWhatwedoId(?)', [whatwedo_id]);
+    const details = result[0] || [];
+    const thinkItems = result[1] || [];
+
+    if (details.length === 0) {
+      return res.status(404).json({ success: false, message: 'Detail record not found for the given whatwedo_id' });
+    }
+
+    const data = {
+      ...details[0],
+      think_items: thinkItems
+    };
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Error fetching detail record by whatwedo_id:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+  }
+});
+
 // 3. POST - CREATE NEW DETAIL RECORD WITH IMAGE UPLOADS
 router.post('/', handleUpload, async (req, res) => {
   let filesToCleanup = [];

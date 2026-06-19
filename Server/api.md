@@ -202,6 +202,44 @@ Base URL: `/api/whatwedodetail`
   }
   ```
 
+### 2.5 Get Detail Item by What We Do ID
+- **Method**: `GET`
+- **URL**: `/whatwedo/:whatwedo_id`
+- **Description**: Returns the detail item and associated `think_items` matching the provided `whatwedo_id`.
+- **Response** (200 OK):
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 1,
+      "whatwedo_id": 1,
+      "banner_image": "/uploads/1718816345678-test_banner.png",
+      "banner_title": "Banner Title",
+      "expertise_header": "Our Expertise",
+      "expertise_desc": "Expertise Description",
+      "created_at": "2026-06-19T04:35:00.000Z",
+      "think_items": [
+        {
+          "id": 1,
+          "whatwedodetail_id": 1,
+          "think_image": "/uploads/1718816345679-test_think.png",
+          "think_header": "How We Think Item 1",
+          "think_desc": "Think Description 1",
+          "sort_order": 1,
+          "created_at": "2026-06-19T04:35:00.000Z"
+        }
+      ]
+    }
+  }
+  ```
+- **Response** (404 Not Found):
+  ```json
+  {
+    "success": false,
+    "message": "Detail record not found for the given whatwedo_id"
+  }
+  ```
+
 ### 3. Create Detail Item (with dynamic images)
 - **Method**: `POST`
 - **URL**: `/`
