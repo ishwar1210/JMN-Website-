@@ -136,7 +136,7 @@ Base URL: `/api/whatwedodetail`
 ### 1. Get All Detail Items
 - **Method**: `GET`
 - **URL**: `/`
-- **Description**: Returns all detail items from the `whatwedodetail` table ordered by creation date (newest first).
+- **Description**: Returns all detail items from the `whatwedodetail` table joined with aggregated `think_items` as JSON.
 - **Response** (200 OK):
   ```json
   {
@@ -149,10 +149,16 @@ Base URL: `/api/whatwedodetail`
         "banner_title": "Banner Title",
         "expertise_header": "Our Expertise",
         "expertise_desc": "Expertise Description",
-        "think_image": "/uploads/1718816345679-test_think.png",
-        "think_header": "How We Think",
-        "think_desc": "Think Description",
-        "created_at": "2026-06-19T04:35:00.000Z"
+        "created_at": "2026-06-19T04:35:00.000Z",
+        "think_items": [
+          {
+            "id": 1,
+            "image": "/uploads/1718816345679-test_think.png",
+            "header": "How We Think Item 1",
+            "desc": "Think Description 1",
+            "sort_order": 1
+          }
+        ]
       }
     ]
   }
@@ -161,7 +167,7 @@ Base URL: `/api/whatwedodetail`
 ### 2. Get Single Detail Item by ID
 - **Method**: `GET`
 - **URL**: `/:id`
-- **Description**: Returns a single detail item matching the provided `id`.
+- **Description**: Returns a single detail item along with its ordered list of `think_items`.
 - **Response** (200 OK):
   ```json
   {
@@ -173,10 +179,18 @@ Base URL: `/api/whatwedodetail`
       "banner_title": "Banner Title",
       "expertise_header": "Our Expertise",
       "expertise_desc": "Expertise Description",
-      "think_image": "/uploads/1718816345679-test_think.png",
-      "think_header": "How We Think",
-      "think_desc": "Think Description",
-      "created_at": "2026-06-19T04:35:00.000Z"
+      "created_at": "2026-06-19T04:35:00.000Z",
+      "think_items": [
+        {
+          "id": 1,
+          "whatwedodetail_id": 1,
+          "think_image": "/uploads/1718816345679-test_think.png",
+          "think_header": "How We Think Item 1",
+          "think_desc": "Think Description 1",
+          "sort_order": 1,
+          "created_at": "2026-06-19T04:35:00.000Z"
+        }
+      ]
     }
   }
   ```
@@ -188,7 +202,7 @@ Base URL: `/api/whatwedodetail`
   }
   ```
 
-### 3. Create Detail Item (with images)
+### 3. Create Detail Item (with dynamic images)
 - **Method**: `POST`
 - **URL**: `/`
 - **Headers**: `Content-Type: multipart/form-data`
@@ -197,10 +211,10 @@ Base URL: `/api/whatwedodetail`
   - `banner_title` (String, Optional)
   - `expertise_header` (String, Optional)
   - `expertise_desc` (String, Optional)
-  - `think_header` (String, Optional)
-  - `think_desc` (String, Optional)
+  - `think_items` (JSON String of Array, e.g. `[{"header": "T1", "desc": "D1"}, {"header": "T2", "desc": "D2"}]`)
   - `banner_image` (File, Optional)
-  - `think_image` (File, Optional)
+  - `think_image_0` (File, Optional - mapped to think item index 0)
+  - `think_image_1` (File, Optional - mapped to think item index 1)
 - **Response** (201 Created):
   ```json
   {
@@ -213,14 +227,18 @@ Base URL: `/api/whatwedodetail`
       "banner_title": "Banner Title",
       "expertise_header": "Our Expertise",
       "expertise_desc": "Expertise Description",
-      "think_image": "/uploads/1718816345679-test_think.png",
-      "think_header": "How We Think",
-      "think_desc": "Think Description"
+      "think_items": [
+        {
+          "header": "T1",
+          "desc": "D1",
+          "image": "/uploads/1718816345679-think_0.png"
+        }
+      ]
     }
   }
   ```
 
-### 4. Update Detail Item (with images)
+### 4. Update Detail Item (with dynamic images)
 - **Method**: `PUT`
 - **URL**: `/:id`
 - **Headers**: `Content-Type: multipart/form-data`
@@ -229,10 +247,9 @@ Base URL: `/api/whatwedodetail`
   - `banner_title` (String, Optional)
   - `expertise_header` (String, Optional)
   - `expertise_desc` (String, Optional)
-  - `think_header` (String, Optional)
-  - `think_desc` (String, Optional)
+  - `think_items` (JSON String of Array, e.g. `[{"header": "T1 Updated", "desc": "D1", "image": "/uploads/old_img.png"}]`)
   - `banner_image` (File, Optional - Replaces existing banner image)
-  - `think_image` (File, Optional - Replaces existing think image)
+  - `think_image_0` (File, Optional - Replaces or adds image for think item at index 0)
 - **Response** (200 OK):
   ```json
   {
@@ -245,9 +262,13 @@ Base URL: `/api/whatwedodetail`
       "banner_title": "Updated Banner Title",
       "expertise_header": "Our Expertise",
       "expertise_desc": "Expertise Description",
-      "think_image": "/uploads/1718816345679-test_think.png",
-      "think_header": "How We Think",
-      "think_desc": "Think Description"
+      "think_items": [
+        {
+          "header": "T1 Updated",
+          "desc": "D1",
+          "image": "/uploads/1718816345680-new_think_0.png"
+        }
+      ]
     }
   }
   ```
@@ -255,7 +276,7 @@ Base URL: `/api/whatwedodetail`
 ### 5. Delete Detail Item
 - **Method**: `DELETE`
 - **URL**: `/:id`
-- **Description**: Deletes the database record and associated physical images from the storage.
+- **Description**: Deletes the database records (main table and think items) and all associated physical images from disk.
 - **Response** (200 OK):
   ```json
   {
