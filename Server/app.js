@@ -8,6 +8,12 @@ var cors = require('cors');
 
 var whatwedoRouter = require('./routes/whatwedo');
 var whatwedodetailRouter = require('./routes/whatwedodetail');
+var technologiesRouter = require('./routes/technologies');
+var careerRouter = require('./routes/career');
+var careerApplicationsRouter = require('./routes/career_applications');
+var homeRouter = require('./routes/home');
+var clientRouter = require('./routes/client');
+var achievementsRouter = require('./routes/achievements');
 
 var app = express();
 
@@ -25,6 +31,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/whatwedo', whatwedoRouter);
 app.use('/api/whatwedodetail', whatwedodetailRouter);
+app.use('/api/technologies', technologiesRouter);
+app.use('/api/career', careerRouter);
+app.use('/api/career_applications', careerApplicationsRouter);
+app.use('/api/home', homeRouter);
+app.use('/api/client', clientRouter);
+app.use('/api/achievements', achievementsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
