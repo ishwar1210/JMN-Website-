@@ -11,15 +11,7 @@ interface WhatWeDoItem {
   name: string;
   slug: string;
   category: string;
-  description: string | null;
-  sort_order: number;
-  is_active: number;
-}
-
-interface WhatWeDoData {
-  solutions: WhatWeDoItem[];
-  products: WhatWeDoItem[];
-  industries: WhatWeDoItem[];
+  created_at: string;
 }
 
 interface TechnologyItem {
@@ -38,11 +30,7 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [technologies, setTechnologies] = useState<TechnologyItem[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
-  const [whatWeDoData, setWhatWeDoData] = useState<WhatWeDoData>({
-    solutions: [],
-    products: [],
-    industries: [],
-  });
+  const [whatWeDoData, setWhatWeDoData] = useState<WhatWeDoItem[]>([]);
   const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -60,13 +48,25 @@ const Navbar = () => {
     const fetchWhatWeDoData = async () => {
       try {
         const response = await axiosInstance.get(ENDPOINTS.WHATWEDO);
-        if (response.data.success) setWhatWeDoData(response.data.data);
+        if (response.data.success) {
+          setWhatWeDoData(response.data.data);
+        }
       } catch (error) {
         console.error('Error fetching What We Do data:', error);
       }
     };
     fetchWhatWeDoData();
   }, []);
+
+  // Group What We Do items by category
+  const groupedWhatWeDo = whatWeDoData.reduce<Record<string, WhatWeDoItem[]>>((groups, item) => {
+    const category = item.category || 'Other';
+    if (!groups[category]) {
+      groups[category] = [];
+    }
+    groups[category].push(item);
+    return groups;
+  }, {});
 
   useEffect(() => {
   const fetchTechnologies = async () => {
@@ -142,36 +142,18 @@ const Navbar = () => {
               {activeDropdown === 'whatwedo' && (
                 <div className="mega-dropdown">
                   <div className="mega-dropdown-inner">
-                    <div className="mega-col">
-                      <h6 className="mega-col-title">Solutions</h6>
-                      <ul>
-                        {whatWeDoData.solutions.map((item) => (
-                          <li key={item.id}>
-                            <Link to={`/what-we-do/solutions/${item.slug}`} onClick={closeAll}>{item.name}</Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="mega-col">
-                      <h6 className="mega-col-title">Products</h6>
-                      <ul>
-                        {whatWeDoData.products.map((item) => (
-                          <li key={item.id}>
-                            <Link to={`/what-we-do/products/${item.slug}`} onClick={closeAll}>{item.name}</Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="mega-col">
-                      <h6 className="mega-col-title">Industries</h6>
-                      <ul>
-                        {whatWeDoData.industries.map((item) => (
-                          <li key={item.id}>
-                            <Link to={`/what-we-do/industries/${item.slug}`} onClick={closeAll}>{item.name}</Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    {Object.entries(groupedWhatWeDo).map(([category, items]) => (
+                      <div className="mega-col" key={category}>
+                        <h6 className="mega-col-title">{category}</h6>
+                        <ul>
+                          {items.map((item) => (
+                            <li key={item.id}>
+                              <Link to={`/what-we-do/${item.slug}`} onClick={closeAll}>{item.name}</Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}

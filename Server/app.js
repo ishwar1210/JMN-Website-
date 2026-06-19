@@ -7,6 +7,7 @@ var logger = require('morgan');
 var cors = require('cors');
 
 var whatwedoRouter = require('./routes/whatwedo');
+var whatwedodetailRouter = require('./routes/whatwedodetail');
 
 var app = express();
 
@@ -20,8 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/whatwedo', whatwedoRouter);
+app.use('/api/whatwedodetail', whatwedodetailRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
