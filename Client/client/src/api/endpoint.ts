@@ -1,5 +1,5 @@
 export const ENDPOINTS = {
-  // What We Do
+// What We Do
   WHATWEDO: '/api/whatwedo',
 
   // What We Do Detail
@@ -7,4 +7,7 @@ export const ENDPOINTS = {
 
   // Technologies
   TECHNOLOGIES: '/api/technologies',
+
+  // Career
+  CAREER: '/api/career',
 };

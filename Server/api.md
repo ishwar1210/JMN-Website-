@@ -593,6 +593,7 @@ Base URL: `/api/career_applications`
         "candidate_contact": "+1234567890",
         "candidate_email": "john@example.com",
         "candidate_location": "New York",
+        "resume": "/uploads/1718816345678-resume.pdf",
         "job_title": "Software Engineer",
         "applied_at": "2026-06-19T09:30:00.000Z"
       }
@@ -614,6 +615,7 @@ Base URL: `/api/career_applications`
       "candidate_contact": "+1234567890",
       "candidate_email": "john@example.com",
       "candidate_location": "New York",
+      "resume": "/uploads/1718816345678-resume.pdf",
       "job_title": "Software Engineer",
       "applied_at": "2026-06-19T09:30:00.000Z"
     }
@@ -630,17 +632,14 @@ Base URL: `/api/career_applications`
 ### 3. Create Application
 - **Method**: `POST`
 - **URL**: `/`
-- **Headers**: `Content-Type: application/json`
+- **Headers**: `Content-Type: multipart/form-data`
 - **Request Body**:
-  ```json
-  {
-    "candidate_name": "John Doe",
-    "candidate_contact": "+1234567890",
-    "candidate_email": "john@example.com",
-    "candidate_location": "New York",
-    "job_title": "Software Engineer"
-  }
-  ```
+  - `candidate_name` (String, Required)
+  - `candidate_contact` (String, Optional)
+  - `candidate_email` (String, Optional)
+  - `candidate_location` (String, Optional)
+  - `job_title` (String, Optional)
+  - `resume` (File, Optional - PDF, DOC, DOCX resume file)
 - **Response** (201 Created):
   ```json
   {
@@ -652,6 +651,7 @@ Base URL: `/api/career_applications`
       "candidate_contact": "+1234567890",
       "candidate_email": "john@example.com",
       "candidate_location": "New York",
+      "resume": "/uploads/1718816345678-resume.pdf",
       "job_title": "Software Engineer"
     }
   }
@@ -667,17 +667,14 @@ Base URL: `/api/career_applications`
 ### 4. Update Application
 - **Method**: `PUT`
 - **URL**: `/:id`
-- **Headers**: `Content-Type: application/json`
+- **Headers**: `Content-Type: multipart/form-data`
 - **Request Body**:
-  ```json
-  {
-    "candidate_name": "John Doe Updated",
-    "candidate_contact": "+1234567890",
-    "candidate_email": "john.updated@example.com",
-    "candidate_location": "San Francisco",
-    "job_title": "Senior Software Engineer"
-  }
-  ```
+  - `candidate_name` (String, Required)
+  - `candidate_contact` (String, Optional)
+  - `candidate_email` (String, Optional)
+  - `candidate_location` (String, Optional)
+  - `job_title` (String, Optional)
+  - `resume` (File, Optional - Replaces existing resume file)
 - **Response** (200 OK):
   ```json
   {
@@ -689,6 +686,7 @@ Base URL: `/api/career_applications`
       "candidate_contact": "+1234567890",
       "candidate_email": "john.updated@example.com",
       "candidate_location": "San Francisco",
+      "resume": "/uploads/1718816345679-new-resume.pdf",
       "job_title": "Senior Software Engineer"
     }
   }
@@ -697,6 +695,7 @@ Base URL: `/api/career_applications`
 ### 5. Delete Application
 - **Method**: `DELETE`
 - **URL**: `/:id`
+- **Description**: Deletes the database record and associated physical resume file from disk.
 - **Response** (200 OK):
   ```json
   {

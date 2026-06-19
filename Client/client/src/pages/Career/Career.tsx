@@ -6,7 +6,24 @@ import Benefits from "../../assets/images/Benefits.jpg";
 import purpose from "../../assets/images/purpose.jpg";
 
 import "../../styles/Carrer/Career.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
+import axiosInstance from "../../api/axiosInstance";
+import { ENDPOINTS } from "../../api/endpoint";
+
+/* ───────── API Response Interface ───────── */
+interface CareerJob {
+  id: number;
+  job_title: string;
+  job_category: string;
+  job_desc: string;
+  job_type: string;
+  created_at: string;
+}
+
+interface CareerApiResponse {
+  success: boolean;
+  data: CareerJob[];
+}
 
 const benefitsSlides = [
   {
@@ -16,79 +33,29 @@ const benefitsSlides = [
   },
 ];
 
-// ── Job data — baad mein backend API se replace karna ──
-const jobOpenings = [
-  {
-    id: 1,
-    title: "React Developer",
-    category: "Frontend",
-    location: "Nashik, India",
-    type: "Full-Time",
-    dept: "Engineering",
-    isNew: true,
-    desc: "Build and maintain high-quality web applications using React, TypeScript, and modern frontend tooling.",
-  },
-  {
-    id: 2,
-    title: "UI/UX Designer",
-    category: "Frontend",
-    location: "Nashik, India",
-    type: "Full-Time",
-    dept: "Design",
-    isNew: true,
-    desc: "Design intuitive, pixel-perfect interfaces for mobile and web applications using Figma and modern design systems.",
-  },
-  {
-    id: 3,
-    title: "Node.js Backend Developer",
-    category: "Backend",
-    location: "Nashik, India",
-    type: "Full-Time",
-    dept: "Engineering",
-    isNew: true,
-    desc: "Develop scalable REST APIs and microservices using Node.js, Express, and MySQL/PostgreSQL.",
-  },
-  {
-    id: 4,
-    title: "Java Spring Boot Developer",
-    category: "Backend",
-    location: "Nashik, India",
-    type: "Full-Time",
-    dept: "Engineering",
-    isNew: false,
-    desc: "Design and build enterprise-grade backend systems using Spring Boot, REST APIs, and cloud infrastructure.",
-  },
-  {
-    id: 5,
-    title: "QA Test Engineer",
-    category: "Tester",
-    location: "Nashik, India",
-    type: "Full-Time",
-    dept: "Quality Assurance",
-    isNew: true,
-    desc: "Plan and execute manual and automated test cases to ensure product quality across web and mobile platforms.",
-  },
-  {
-    id: 6,
-    title: "Automation QA Engineer",
-    category: "Tester",
-    location: "Nashik, India",
-    type: "Full-Time",
-    dept: "Quality Assurance",
-    isNew: false,
-    desc: "Build and maintain automated testing frameworks using Selenium, Cypress, or Playwright for end-to-end coverage.",
-  },
-];
-
-const FILTER_TABS = ["All", "Frontend", "Backend", "Tester"] as const;
-type FilterTab = (typeof FILTER_TABS)[number];
-
 const Career = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [listVisible, setListVisible] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<FilterTab>("All");
+  const [activeFilter, setActiveFilter] = useState<string>("All");
+  const [jobs, setJobs] = useState<CareerJob[]>([]);
   const listRef = useRef<HTMLDivElement>(null);
 
+  /* ── fetch jobs from API ── */
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await axiosInstance.get<CareerApiResponse>(ENDPOINTS.CAREER);
+        if (res.data.success) {
+          setJobs(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch career data", err);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  /* ── auto-rotate benefits ── */
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % benefitsSlides.length);
@@ -96,6 +63,7 @@ const Career = () => {
     return () => clearInterval(timer);
   }, []);
 
+  /* ── intersection observer for list animation ── */
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
@@ -112,10 +80,17 @@ const Career = () => {
     return () => observer.disconnect();
   }, []);
 
+  /* ── derive unique categories from API data ── */
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(jobs.map((j) => j.job_category)));
+    return ["All", ...cats];
+  }, [jobs]);
+
+  /* ── filter jobs based on active category ── */
   const filteredJobs =
     activeFilter === "All"
-      ? jobOpenings
-      : jobOpenings.filter((j) => j.category === activeFilter);
+      ? jobs
+      : jobs.filter((j) => j.job_category === activeFilter);
 
   return (
     <>
@@ -209,21 +184,21 @@ const Career = () => {
               Explore our open positions and find the role that fits you best.
             </p>
 
-            {/* ── Filter Tabs ── */}
+            {/* ── Dynamic Filter Tabs ── */}
             <div className="job-filter-tabs">
-              {FILTER_TABS.map((tab) => (
+              {categories.map((cat) => (
                 <button
-                  key={tab}
+                  key={cat}
                   className={`job-filter-tab${
-                    activeFilter === tab ? " job-filter-tab--active" : ""
+                    activeFilter === cat ? " job-filter-tab--active" : ""
                   }`}
-                  onClick={() => setActiveFilter(tab)}
+                  onClick={() => setActiveFilter(cat)}
                 >
-                  {tab}
+                  {cat}
                   <span className="job-filter-tab-count">
-                    {tab === "All"
-                      ? jobOpenings.length
-                      : jobOpenings.filter((j) => j.category === tab).length}
+                    {cat === "All"
+                      ? jobs.length
+                      : jobs.filter((j) => j.job_category === cat).length}
                   </span>
                 </button>
               ))}
@@ -239,21 +214,15 @@ const Career = () => {
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
                 <div className="job-opening-card" key={job.id}>
-                  {job.isNew && (
-                    <div className="job-opening-tag">New</div>
-                  )}
                   <div className="job-opening-category-badge">
-                    {job.category}
+                    {job.job_category}
                   </div>
-                  <h3 className="job-opening-title">{job.title}</h3>
+                  <h3 className="job-opening-title">{job.job_title}</h3>
                   <div className="job-opening-meta">
-                    <span className="job-opening-location">
-                      📍 {job.location}
-                    </span>
-                    <span className="job-opening-type">⏳ {job.type}</span>
-                    <span className="job-opening-dept">💼 {job.dept}</span>
+                    <span className="job-opening-type">⏳ {job.job_type}</span>
+                    <span className="job-opening-dept">💼 {job.job_category}</span>
                   </div>
-                  <p className="job-opening-desc">{job.desc}</p>
+                  <p className="job-opening-desc">{job.job_desc}</p>
                   <a href="#apply" className="job-opening-apply">
                     Apply Now &rsaquo;
                   </a>

@@ -34,11 +34,33 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// File filter to allow resumes (pdf, doc, docx)
+const resumeFileFilter = (req, file, cb) => {
+  const allowedExts = /pdf|doc|docx/;
+  // application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document
+  const allowedMimes = /pdf|msword|wordprocessingml|octet-stream/;
+  const extname = allowedExts.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = allowedMimes.test(file.mimetype) || allowedExts.test(file.originalname.split('.').pop().toLowerCase());
+
+  if (extname) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only resumes (PDF, DOC, DOCX) are allowed!'), false);
+  }
+};
+
 // Initialize multer
 const upload = multer({
   storage: storage,
   limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit for videos
   fileFilter: fileFilter
+});
+
+// Initialize multer for resumes
+upload.resume = multer({
+  storage: storage,
+  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB limit for resumes
+  fileFilter: resumeFileFilter
 });
 
 module.exports = upload;
