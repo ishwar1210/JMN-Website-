@@ -18,10 +18,7 @@ interface TechnologyItem {
   id: number;
   name: string;
   slug: string;
-  description: string | null;
-  icon: string | null;
-  sort_order: number;
-  is_active: number;
+  created_at: string;
 }
 
 const Navbar = () => {
@@ -148,7 +145,7 @@ const Navbar = () => {
                         <ul>
                           {items.map((item) => (
                             <li key={item.id}>
-                              <Link to={`/what-we-do/${item.slug}`} onClick={closeAll}>{item.name}</Link>
+                              <Link to={`/what-we-do/${item.id}`} onClick={closeAll}>{item.name}</Link>
                             </li>
                           ))}
                         </ul>

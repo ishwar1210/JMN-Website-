@@ -13,7 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/career" element={<Career />} />
-        <Route path="/what-we-do/*" element={<WhatWeDo />} />
+        <Route path="/what-we-do/:id" element={<WhatWeDo />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
       <footer className="site-footer">
