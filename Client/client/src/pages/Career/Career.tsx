@@ -9,6 +9,7 @@ import "../../styles/Carrer/Career.css";
 import { useEffect, useRef, useState, useMemo } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { ENDPOINTS } from "../../api/endpoint";
+import JobApplicationModal from "../../components/career/JobApplicationModal";
 
 /* ───────── API Response Interface ───────── */
 interface CareerJob {
@@ -38,6 +39,8 @@ const Career = () => {
   const [listVisible, setListVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [jobs, setJobs] = useState<CareerJob[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedJobTitle, setSelectedJobTitle] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
 
   /* ── fetch jobs from API ── */
@@ -223,9 +226,16 @@ const Career = () => {
                     <span className="job-opening-dept">💼 {job.job_category}</span>
                   </div>
                   <p className="job-opening-desc">{job.job_desc}</p>
-                  <a href="#apply" className="job-opening-apply">
+                  <button
+                    type="button"
+                    className="job-opening-apply"
+                    onClick={() => {
+                      setSelectedJobTitle(job.job_title);
+                      setModalOpen(true);
+                    }}
+                  >
                     Apply Now &rsaquo;
-                  </a>
+                  </button>
                 </div>
               ))
             ) : (
@@ -236,6 +246,13 @@ const Career = () => {
           </div>
         </div>
       </section>
+
+      {/* ── Job Application Modal ── */}
+      <JobApplicationModal
+        open={modalOpen}
+        jobTitle={selectedJobTitle}
+        onClose={() => setModalOpen(false)}
+      />
 
       {/* ===== JOIN / ALERTS / NETWORK SECTION ===== */}
       <section className="cta-cards-section">

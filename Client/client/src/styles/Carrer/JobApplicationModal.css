@@ -1,0 +1,214 @@
+/* ===================================================
+   JOB APPLICATION MODAL
+   =================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  padding: 2.2rem 2rem 2rem;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.25s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.modal-close-btn:hover {
+  color: #333;
+}
+
+.modal-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #3c1053;
+  margin: 0 0 0.3rem 0;
+}
+
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 1.5rem 0;
+}
+
+.modal-subtitle strong {
+  color: #3c1053;
+}
+
+/* ── Form ── */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-field input:not([type="file"]) {
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.modal-field input:not([type="file"]):focus {
+  border-color: #6d3b9e;
+  box-shadow: 0 0 0 2px rgba(109, 59, 158, 0.12);
+}
+
+/* ── File Upload ── */
+.modal-file-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.modal-file-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.modal-file-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px dashed #aaa;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: #888;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-file-label:hover {
+  border-color: #6d3b9e;
+  background: #f5f0fa;
+  color: #6d3b9e;
+}
+
+.modal-file-input:focus + .modal-file-label {
+  border-color: #6d3b9e;
+  box-shadow: 0 0 0 2px rgba(109, 59, 158, 0.12);
+}
+
+.modal-error {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin: 0;
+  background: #fce4e4;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+}
+
+.modal-submit-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #6d3b9e, #351a55);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  margin-top: 0.3rem;
+}
+
+.modal-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(109, 59, 158, 0.35);
+}
+
+.modal-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Success ── */
+.modal-success {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.modal-success p {
+  font-size: 1.05rem;
+  color: #2e7d32;
+  font-weight: 600;
+  margin: 0 0 1.2rem 0;
+}
+
+.modal-ok-btn {
+  padding: 0.6rem 2rem;
+  background: #2e7d32;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.modal-ok-btn:hover {
+  background: #1b5e20;
+}

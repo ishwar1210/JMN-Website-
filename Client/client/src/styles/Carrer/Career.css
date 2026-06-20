@@ -457,6 +457,8 @@
   margin-top: 0.3rem;
   transition: all 0.3s ease;
   position: relative;
+  border: none;
+  background: none;
 }
 
 .job-opening-apply::after {

@@ -10,4 +10,5 @@ export const ENDPOINTS = {
 
   // Career
   CAREER: '/api/career',
+  CAREER_APPLICATIONS: '/api/career_applications',
 };
