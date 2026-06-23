@@ -11,4 +11,8 @@ export const ENDPOINTS = {
   // Career
   CAREER: '/api/career',
   CAREER_APPLICATIONS: '/api/career_applications',
+
+  // Home
+  HOME: '/api/home',
+  HOME_BY_ID: (id: number) => `/api/home/${id}`,
 };

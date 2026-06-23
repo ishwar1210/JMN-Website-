@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { Container } from "react-bootstrap";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { HomeData } from "../../services/homeService";
+import { getHomeData } from "../../services/homeService";
+import { Container, Row, Col } from "react-bootstrap";
+import { baseUrl } from "../../api/axiosInstance";
 import companyOverviewBg from "../../assets/images/company-overview-bg.jpg";
 import rocketIcon from "../../assets/images/imgi_7_startup.svg";
 import appIcon from "../../assets/images/imgi_8_mobile.svg";
@@ -8,60 +11,21 @@ import globeIcon from "../../assets/images/imgi_10_world.svg";
 import dealIcon from "../../assets/images/imgi_11_deal.svg";
 import teamIcon from "../../assets/images/imgi_12_team.svg";
 import clientLogoJmn from "../../assets/images/JMN.png";
-// import clientLogoShah from '../../assets/images/imgi_1_stechlogo.jpeg';
 import clientLogoMsme from "../../assets/images/imgi_38_common-msme.jpeg";
 import clientLogoBadgeA from "../../assets/images/imgi_34_badges-a.jpeg";
 import clientLogoBadgeB from "../../assets/images/imgi_35_badges-b.jpeg";
 import clientLogoBadgeC from "../../assets/images/imgi_36_badges-c.jpeg";
 import clientLogoBadgeD from "../../assets/images/imgi_37_badges-d.jpeg";
-import heroBannerVideo from "../../assets/images/hero-banner.mp4";
 import "../../styles/Home/Home.css";
-import { Row, Col } from "react-bootstrap";
 
-const stats = [
-  {
-    id: 1,
-    icon: rocketIcon,
-    value: "12+",
-    label: "Years\nExperience",
-    className: "stat-card-blue",
-  },
-  {
-    id: 2,
-    icon: appIcon,
-    value: "50+",
-    label: "Apps\nDeveloped",
-    className: "stat-card-pink",
-  },
-  {
-    id: 3,
-    icon: computerIcon,
-    value: "99%",
-    label: "Projects\nDelivered",
-    className: "stat-card-cyan",
-  },
-  {
-    id: 4,
-    icon: globeIcon,
-    value: "10+",
-    label: "Countries\nServed",
-    className: "stat-card-lime",
-  },
-  {
-    id: 5,
-    icon: dealIcon,
-    value: "100%",
-    label: "Client\nSatisfaction",
-    className: "stat-card-indigo",
-  },
-  {
-    id: 6,
-    icon: teamIcon,
-    value: "5+",
-    label: "Talented\nSquad",
-    className: "stat-card-orange",
-  },
-];
+interface StatItem {
+  id: number;
+  icon: string;
+  value: string;
+  label: string;
+  className: string;
+  isPercent: boolean;
+}
 
 const clientLogos = [
   { id: 1, image: clientLogoJmn, name: "JMN Infotech" },
@@ -73,10 +37,80 @@ const clientLogos = [
 ];
 
 const Home = () => {
+  const [homeData, setHomeData] = useState<HomeData | null>(null);
   const statsRef = useRef<HTMLDivElement>(null);
-  const [animatedStats, setAnimatedStats] = useState(() => stats.map(() => 0));
+  const [animatedStats, setAnimatedStats] = useState<number[]>([]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getHomeData();
+        if (response.success && response.data.length > 0) {
+          setHomeData(response.data[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch home data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const buildStats = (data: HomeData): StatItem[] => [
+    {
+      id: 1,
+      icon: rocketIcon,
+      value: String(data.company_exp),
+      label: "Years\nExperience",
+      className: "stat-card-blue",
+      isPercent: false,
+    },
+    {
+      id: 2,
+      icon: appIcon,
+      value: String(data.apps_dev),
+      label: "Apps\nDeveloped",
+      className: "stat-card-pink",
+      isPercent: false,
+    },
+    {
+      id: 3,
+      icon: computerIcon,
+      value: String(data.project_dev),
+      label: "Projects\nDelivered",
+      className: "stat-card-cyan",
+      isPercent: false,
+    },
+    {
+      id: 4,
+      icon: globeIcon,
+      value: String(data.countries_served),
+      label: "Countries\nServed",
+      className: "stat-card-lime",
+      isPercent: false,
+    },
+    {
+      id: 5,
+      icon: dealIcon,
+      value: data.client_satisfaction_percent,
+      label: "Client\nSatisfaction",
+      className: "stat-card-indigo",
+      isPercent: true,
+    },
+    {
+      id: 6,
+      icon: teamIcon,
+      value: String(data.talented_squad),
+      label: "Talented\nSquad",
+      className: "stat-card-orange",
+      isPercent: false,
+    },
+  ];
+
+  const stats = useMemo(() => (homeData ? buildStats(homeData) : []), [homeData]);
+
+  useEffect(() => {
+    if (stats.length === 0) return;
+
     let animationFrame = 0;
     let hasAnimated = false;
 
@@ -112,20 +146,33 @@ const Home = () => {
       observer.disconnect();
       cancelAnimationFrame(animationFrame);
     };
-  }, []);
+  }, [stats]);
+
+  const getVideoSrc = () => {
+    if (homeData?.home_video) {
+      return homeData.home_video.startsWith("http")
+        ? homeData.home_video
+        : `${baseUrl}${homeData.home_video}`;
+    }
+    return "";
+  };
 
   return (
     <>
       {/* ===== HERO VIDEO SECTION ===== */}
       <section className="hero-video-section">
-        <video
-          className="hero-video"
-          src={heroBannerVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
+        {homeData?.home_video ? (
+          <video
+            className="hero-video"
+            src={getVideoSrc()}
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        ) : (
+          <div className="hero-video-placeholder" />
+        )}
         <div className="hero-video-overlay" />
       </section>
 
@@ -138,11 +185,10 @@ const Home = () => {
           <Row className="company-overview-row align-items-center">
             <Col lg={6} md={12}>
               <div className="company-overview-content">
-                <h2>JMN Infotech Private Limited</h2>
+                <h2>{homeData?.home_title || "JMN Infotech Private Limited"}</h2>
                 <p>
-                  Global Technology Partner for Digital Transformation and
-                  Industry 4.0 Solutions RFID | IoT | AI | Enterprise Software |
-                  Web & Mobile Applications | Smart Governance | Digital Twin
+                  {homeData?.home_desc ||
+                    "Global Technology Partner for Digital Transformation and Industry 4.0 Solutions RFID | IoT | AI | Enterprise Software | Web & Mobile Applications | Smart Governance | Digital Twin"}
                 </p>
                 <h3>Let's Start a New Project Together</h3>
                 <a href="#" className="quote-button">
@@ -159,8 +205,8 @@ const Home = () => {
                         <img src={stat.icon} alt="" aria-hidden="true" />
                       </div>
                       <strong>
-                        {animatedStats[index]}
-                        {stat.value.includes("%") ? "%" : "+"}
+                        {animatedStats[index] ?? 0}
+                        {stat.isPercent ? "%" : "+"}
                       </strong>
                       <p>
                         {stat.label.split("\n").map((line, i) => (

@@ -8,9 +8,16 @@ const upload = require('../middleware/upload');
 // Helper function to delete physical files
 const deleteFile = (relativePath) => {
   if (!relativePath) return;
-  const filename = relativePath.startsWith('/uploads/') 
-    ? relativePath.replace('/uploads/', '') 
-    : relativePath;
+  
+  // Extract only the filename from the URL or path
+  let filename = relativePath;
+  if (relativePath.includes('/uploads/')) {
+    filename = relativePath.substring(relativePath.indexOf('/uploads/') + 9);
+  } else if (relativePath.includes('\\uploads\\')) {
+    filename = relativePath.substring(relativePath.indexOf('\\uploads\\') + 9);
+  } else {
+    filename = path.basename(relativePath);
+  }
   
   const filePath = path.join(__dirname, '../uploads', filename);
   fs.unlink(filePath, (err) => {
