@@ -193,7 +193,7 @@
 .stat-card-orange { --stat-accent: #f5b983; background: rgba(255,242,225,0.88); }
 
 /* ===================================================
-   CLIENTS SECTION
+   CLIENTS SECTION — Horizontal Infinite Marquee + Wave Entry
    =================================================== */
 .clients-section {
   position: relative;
@@ -210,7 +210,7 @@
   border-radius: 50%;
   background: repeating-radial-gradient(
     ellipse at center,
-    rgba(137,181,232,0.34) 0 1px,
+    rgba(137, 181, 232, 0.34) 0 1px,
     transparent 1px 7px
   );
   opacity: 0.5;
@@ -221,7 +221,7 @@
 .clients-header {
   position: relative;
   z-index: 1;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   text-align: center;
 }
 
@@ -234,59 +234,127 @@
   line-height: 1.2;
 }
 
-.clients-marquee {
+/* ── Marquee wrapper — masks the left/right fade ── */
+.clients-marquee-wrapper {
   position: relative;
-  z-index: 1;
   width: 100%;
   overflow: hidden;
+  /* left & right fade-out masks */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
 }
 
-.clients-marquee::before,
-.clients-marquee::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  z-index: 2;
-  width: 120px;
-  pointer-events: none;
-}
-
-.clients-marquee::before {
-  left: 0;
-  background: linear-gradient(90deg, #ffffff 0%, rgba(255,255,255,0) 100%);
-}
-
-.clients-marquee::after {
-  right: 0;
-  background: linear-gradient(270deg, #ffffff 0%, rgba(255,255,255,0) 100%);
-}
-
-.clients-track {
+/* ── Marquee track — JS controls transform via scroll ── */
+.clients-marquee-track {
   display: flex;
-  width: max-content;
+  align-items: center; /* keep cards vertically centered inside track */
+  min-height: 260px;   /* enough room for the 60px wave amplitude up and down */
+  flex-wrap: nowrap;
   gap: 28px;
-  animation: clientsMarquee 28s linear infinite;
+  width: max-content;
+  padding: 12px 0 20px;
+  /* JS drives translateX — no CSS animation */
+  will-change: transform;
+  transform: translateX(0);
 }
 
-.client-logo-card {
-  flex: 0 0 190px;
-  height: 96px;
+/* ── Each circular card ── */
+.client-circle-card {
+  flex: 0 0 auto;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  background: #f5f6ff;
+  border: 2px solid #eaecff;
+  box-shadow: 0 6px 20px rgba(8, 13, 79, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 18px 26px;
+  padding: 20px;
+  cursor: pointer;
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+
+  /* Wave entry start state — hidden & slid from sides */
+  opacity: 0;
+  --start-x: -60px;
+  transform: translateX(var(--start-x)) translateY(var(--wave-y)) scale(0.82);
 }
 
-.client-logo-card img {
-  max-width: 100%;
-  max-height: 64px;
+/* Alternate cards slide from the right side */
+.client-circle-card:nth-child(even) {
+  --start-x: 60px;
+}
+
+/* Hover lift */
+.client-circle-card:hover {
+  box-shadow: 0 14px 32px rgba(8, 13, 79, 0.16);
+  border-color: #aeb9ff;
+  background: #ffffff;
+}
+
+.client-circle-card img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
-@keyframes clientsMarquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(calc(-50% - 14px)); }
+/* ── Wave entrance: triggers when section scrolls into view ── */
+.clients-wave-visible .client-circle-card {
+  animation: clientSideWaveIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--wave-delay, 0ms);
 }
+
+@keyframes clientSideWaveIn {
+  from {
+    opacity: 0;
+    transform: translateX(var(--start-x)) translateY(var(--wave-y)) scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(var(--wave-y)) scale(1);
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .clients-header h2 { font-size: 2.2rem; }
+  .client-circle-card { width: 96px; height: 96px; padding: 16px; }
+  .clients-marquee-track { gap: 20px; }
+}
+
+@media (max-width: 576px) {
+  .clients-section { padding: 36px 0 40px; }
+  .clients-header h2 { font-size: 1.5rem; }
+  .client-circle-card { width: 78px; height: 78px; padding: 13px; }
+  .clients-marquee-track { gap: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clients-wave-visible .client-circle-card,
+  .clients-wave-visible .client-circle-card:nth-child(odd),
+  .clients-wave-visible .client-circle-card:nth-child(even) {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
 
 /* ===================================================
    HOME CONTACT SECTION

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { HomeData } from "../../services/homeService";
 import { getHomeData } from "../../services/homeService";
+import { clientService, type Client } from "../../services/clientService";
 import { Container, Row, Col } from "react-bootstrap";
 import { baseUrl } from "../../api/axiosInstance";
+import "../../styles/Home/Home.css";
 import companyOverviewBg from "../../assets/images/company-overview-bg.jpg";
 import rocketIcon from "../../assets/images/imgi_7_startup.svg";
 import appIcon from "../../assets/images/imgi_8_mobile.svg";
@@ -10,13 +12,6 @@ import computerIcon from "../../assets/images/imgi_9_computers.svg";
 import globeIcon from "../../assets/images/imgi_10_world.svg";
 import dealIcon from "../../assets/images/imgi_11_deal.svg";
 import teamIcon from "../../assets/images/imgi_12_team.svg";
-import clientLogoJmn from "../../assets/images/JMN.png";
-import clientLogoMsme from "../../assets/images/imgi_38_common-msme.jpeg";
-import clientLogoBadgeA from "../../assets/images/imgi_34_badges-a.jpeg";
-import clientLogoBadgeB from "../../assets/images/imgi_35_badges-b.jpeg";
-import clientLogoBadgeC from "../../assets/images/imgi_36_badges-c.jpeg";
-import clientLogoBadgeD from "../../assets/images/imgi_37_badges-d.jpeg";
-import "../../styles/Home/Home.css";
 
 interface StatItem {
   id: number;
@@ -27,19 +22,16 @@ interface StatItem {
   isPercent: boolean;
 }
 
-const clientLogos = [
-  { id: 1, image: clientLogoJmn, name: "JMN Infotech" },
-  { id: 3, image: clientLogoMsme, name: "MSME" },
-  { id: 4, image: clientLogoBadgeA, name: "Industry Leader" },
-  { id: 5, image: clientLogoBadgeB, name: "Client Badge" },
-  { id: 6, image: clientLogoBadgeC, name: "Client Badge" },
-  { id: 7, image: clientLogoBadgeD, name: "Client Badge" },
-];
-
 const Home = () => {
   const [homeData, setHomeData] = useState<HomeData | null>(null);
+  const [clients, setClients] = useState<Client[]>([]);
+  const clientsRef = useRef<HTMLDivElement>(null);
+  const marqueeTrackRef = useRef<HTMLDivElement>(null);
+  const [clientsVisible, setClientsVisible] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
   const [animatedStats, setAnimatedStats] = useState<number[]>([]);
+  // Scroll-driven marquee refs
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,8 +44,89 @@ const Home = () => {
         console.error("Failed to fetch home data:", error);
       }
     };
+    const fetchClients = async () => {
+      try {
+        const data = await clientService.getAll();
+        setClients(data);
+      } catch (error) {
+        console.error("Failed to fetch clients:", error);
+      }
+    };
     fetchData();
+    fetchClients();
   }, []);
+
+  // IntersectionObserver — triggers wave animation when section enters viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setClientsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    if (clientsRef.current) observer.observe(clientsRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // Scroll-driven horizontal marquee
+  useEffect(() => {
+    if (!clientsRef.current || !marqueeTrackRef.current) return;
+
+    let lastScrollY = window.scrollY;
+    let currentX = 0;
+    let targetX = 0;
+    let halfWidth = 0;
+
+    const getTrackHalfWidth = () => {
+      if (!marqueeTrackRef.current) return 0;
+      return marqueeTrackRef.current.scrollWidth / 2;
+    };
+
+    const animate = () => {
+      // Smooth lerp toward target
+      currentX += (targetX - currentX) * 0.07;
+
+      // Seamless loop: wrap around when past half
+      halfWidth = getTrackHalfWidth();
+      if (halfWidth > 0) {
+        currentX = ((currentX % halfWidth) + halfWidth) % halfWidth;
+        targetX = ((targetX % halfWidth) + halfWidth) % halfWidth;
+      }
+
+      if (marqueeTrackRef.current) {
+        marqueeTrackRef.current.style.transform = `translateX(-${currentX}px)`;
+      }
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    const onScroll = () => {
+      const section = clientsRef.current;
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const viewH = window.innerHeight;
+
+      // Only move when section is in/near viewport
+      if (rect.bottom < -100 || rect.top > viewH + 100) return;
+
+      const delta = window.scrollY - lastScrollY;
+      lastScrollY = window.scrollY;
+
+      // Speed multiplier — bigger = faster scroll
+      targetX += delta * 1.8;
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [clients]); // re-run when clients load
 
   const buildStats = (data: HomeData): StatItem[] => [
     {
@@ -114,28 +187,25 @@ const Home = () => {
     let animationFrame = 0;
     let hasAnimated = false;
 
-    const animateStats = () => {
-      const duration = 1600;
-      const targets = stats.map((stat) => Number.parseInt(stat.value, 10));
-      const start = performance.now();
-
-      const tick = (now: number) => {
-        const progress = Math.min((now - start) / duration, 1);
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
-        setAnimatedStats(
-          targets.map((target) => Math.round(target * easedProgress)),
-        );
-        if (progress < 1) animationFrame = requestAnimationFrame(tick);
-      };
-      animationFrame = requestAnimationFrame(tick);
-    };
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
           hasAnimated = true;
-          animateStats();
           observer.disconnect();
+
+          const duration = 1600;
+          const targets = stats.map((stat) => Number.parseInt(stat.value, 10));
+          const start = performance.now();
+
+          const tick = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const easedProgress = 1 - Math.pow(1 - progress, 3);
+            setAnimatedStats(
+              targets.map((target) => Math.round(target * easedProgress)),
+            );
+            if (progress < 1) animationFrame = requestAnimationFrame(tick);
+          };
+          animationFrame = requestAnimationFrame(tick);
         }
       },
       { threshold: 0.35 },
@@ -147,6 +217,22 @@ const Home = () => {
       cancelAnimationFrame(animationFrame);
     };
   }, [stats]);
+
+  const getWaveY = (index: number, total: number) => {
+    if (total === 0) return 0;
+    // We want a beautiful smooth sine wave, roughly 1 full wave every 5.5 cards
+    const cycles = Math.max(1, Math.round(total / 5.5));
+    // Calculate frequency so the wave perfectly repeats exactly after 'total' items
+    const freq = (cycles * 2 * Math.PI) / total;
+    const amplitude = 60; // 60px up and down
+    return Math.sin(index * freq) * amplitude;
+  };
+
+  const getLogoUrl = (logoPath: string) => {
+    if (!logoPath) return "";
+    if (logoPath.startsWith("http")) return logoPath;
+    return `${baseUrl}${logoPath}`;
+  };
 
   const getVideoSrc = () => {
     if (homeData?.home_video) {
@@ -226,19 +312,53 @@ const Home = () => {
       </section>
 
       {/* ===== CLIENTS SECTION ===== */}
-      <section className="clients-section">
-        <Container>
-          <div className="clients-header">
-            <h2>Our Clients</h2>
-          </div>
-        </Container>
-        <div className="clients-marquee" aria-label="Our client logos">
-          <div className="clients-track">
-            {[...clientLogos, ...clientLogos].map((client, index) => (
-              <div className="client-logo-card" key={`${client.id}-${index}`}>
-                <img src={client.image} alt={client.name} />
-              </div>
-            ))}
+      <section className="clients-section" ref={clientsRef}>
+        <div className="clients-header">
+          <h2>Our Clients</h2>
+        </div>
+        <div className={`clients-marquee-wrapper ${clientsVisible ? "clients-wave-visible" : ""}`}>
+          <div className="clients-marquee-track" ref={marqueeTrackRef}>
+            {/* First set */}
+            {clients.map((client, index) => {
+              const yOffset = getWaveY(index, clients.length);
+              return (
+                <div
+                  className="client-circle-card"
+                  key={`a-${client.id}`}
+                  style={{ 
+                    "--wave-delay": `${index * 60}ms`,
+                    "--wave-y": `${yOffset}px`
+                  } as React.CSSProperties}
+                >
+                  <img
+                    src={getLogoUrl(client.logo_image)}
+                    alt={client.client_name}
+                    title={client.client_name}
+                  />
+                </div>
+              );
+            })}
+            {/* Duplicate set for seamless loop */}
+            {clients.map((client, index) => {
+              // We use index + clients.length to continue the wave mathematically
+              const yOffset = getWaveY(index + clients.length, clients.length);
+              return (
+                <div
+                  className="client-circle-card"
+                  key={`b-${client.id}`}
+                  style={{ 
+                    "--wave-delay": `${(clients.length + index) * 60}ms`,
+                    "--wave-y": `${yOffset}px`
+                  } as React.CSSProperties}
+                >
+                  <img
+                    src={getLogoUrl(client.logo_image)}
+                    alt={client.client_name}
+                    title={client.client_name}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

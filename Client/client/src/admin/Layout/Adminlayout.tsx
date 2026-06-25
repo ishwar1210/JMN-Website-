@@ -185,6 +185,23 @@ const menuItems: MenuItem[] = [
     ),
   },
   {
+    label: "Clients",
+    path: "/admin/clients",
+    icon: (
+      <svg
+        fill="#ffffff"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+      >
+        <path d="M21 6h-2v3h-2V6h-2V4h2V1h2v3h2v2z" />
+        <path d="M15.906 16.469c.094.531.094 1.062.094 1.531V22H2v-3.938C2 15.5 6.188 14 9.906 14h.125c.063 0 .125 0 .156-.031C11.688 14.75 13.438 15 15.5 15c.156 0 .281 0 .406-.031zm0 0" />
+        <path d="M9.938 13c2.781 0 5.031-2.25 5.031-5.031C14.969 5.25 12.719 3 9.938 3 7.187 3 4.937 5.25 4.937 7.969 4.937 10.75 7.188 13 9.938 13zm0 0" />
+      </svg>
+    ),
+  },
+  {
     label: "Contact Us",
     path: "/admin/contact",
     icon: (

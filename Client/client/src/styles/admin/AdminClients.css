@@ -1,0 +1,333 @@
+/* ===== Admin Clients Page ===== */
+.admin-clients-page {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.admin-clients-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-clients-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.client-add-btn {
+  background: #e94560;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.client-add-btn:hover {
+  background: #d63851;
+}
+
+/* ===== Client Form Overlay ===== */
+.client-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.client-form-modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  animation: modalFadeIn 0.25s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.client-form-modal h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.client-form-group {
+  margin-bottom: 18px;
+}
+
+.client-form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.client-form-group input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.client-form-group input[type="text"]:focus {
+  outline: none;
+  border-color: #e94560;
+  box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.12);
+}
+
+.client-form-group input[type="file"] {
+  width: 100%;
+  padding: 8px 0;
+  font-size: 0.9rem;
+}
+
+.client-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.client-btn-cancel {
+  background: #f1f2f4;
+  color: #555;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.client-btn-cancel:hover {
+  background: #e4e5e7;
+}
+
+.client-btn-submit {
+  background: #e94560;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.client-btn-submit:hover {
+  background: #d63851;
+}
+
+.client-btn-submit:disabled,
+.client-btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== Client Table ===== */
+.client-table-wrapper {
+  overflow-x: auto;
+}
+
+.client-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.client-table thead {
+  background: #f8f9fa;
+}
+
+.client-table th {
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #eee;
+  white-space: nowrap;
+}
+
+.client-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+  vertical-align: middle;
+}
+
+.client-table tbody tr:hover {
+  background: #fafbfc;
+}
+
+.client-logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  background: #f8f8f8;
+}
+
+.client-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.client-table .actions-cell {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.client-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  font-size: 1rem;
+}
+
+.client-action-btn.edit-btn {
+  color: #4a90d9;
+}
+
+.client-action-btn.edit-btn:hover {
+  background: rgba(74, 144, 217, 0.1);
+}
+
+.client-action-btn.delete-btn {
+  color: #e94560;
+}
+
+.client-action-btn.delete-btn:hover {
+  background: rgba(233, 69, 96, 0.1);
+}
+
+.client-action-btn svg {
+  display: block;
+}
+
+/* ===== Loading & Empty States ===== */
+.client-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+}
+
+.client-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.client-error {
+  text-align: center;
+  padding: 20px;
+  color: #e94560;
+  background: #fff0f0;
+  border-radius: 6px;
+  margin: 16px 0;
+}
+
+/* ===== Current logo preview ===== */
+.current-logo-preview {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.current-logo-preview img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ===== Delete Confirmation Overlay ===== */
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2100;
+}
+
+.delete-confirm-modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px;
+  width: 90%;
+  max-width: 380px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  animation: modalFadeIn 0.25s ease;
+  text-align: center;
+}
+
+.delete-confirm-modal h3 {
+  font-size: 1.1rem;
+  color: #1a1a2e;
+  margin: 0 0 12px 0;
+}
+
+.delete-confirm-modal p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 20px 0;
+}
+
+.delete-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
